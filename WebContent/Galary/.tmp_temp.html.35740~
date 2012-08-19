@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+ 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<title>Insert title here</title>
+	<style>
+	BODY { overflow-y:hidden; 
+	overflow-x:hidden;}
+	.Slide
+	{
+		position:absolute;
+	}
+	</style>
+	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<link href="./oldmovie.css" rel="stylesheet" type="text/css"/>
+	<link href="../Controller.css" rel="stylesheet" type="text/css"/>
+	<script language="javascript" type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
+	<script language="javascript" type="text/javascript" src="../jquery-1.7.js"></script>
+	<script language="javascript" type="text/javascript" src="../jquery-ui.js"></script>
+	<script language="javascript" type="text/javascript" src="../macro.js"></script>
+	<script language="javascript" type="text/javascript" src="../vector.js"></script>
+	<script language="javascript" type="text/javascript" src="../dynamicObject.js"></script>
+	<script language="javascript" type="text/javascript" src="../ImageObject.js"></script>
+	<script language="javascript" type="text/javascript" src="../ImageDiv.js"></script>
+	<script language="javascript" type="text/javascript" src="../Controller.js"></script>
+	<script language="javascript" type="text/javascript" src="../SlideShow.js"></script>
+	
+	<script language="javascript" type="text/javascript">
+		
+
+	var slideTimeInterval = 5000; //슬라이드 한장의 보여지는 시간
+	function rand( min , max)
+	{
+		return min + (max - min) * Math.random();
+	}
+	function Comment(text)
+	{
+		this.m_text = text;
+		
+		this.getText = function() {return text;}
+	}
+	function Subtitle ( rootDiv , text)
+	{
+		HtmlObject.call(this,rootDiv);
+				
+		this.getDiv().addClass("Subtitle");
+	
+		this.m_textParagraph = this.getDiv().prepend("<p>" + text + "</p>");
+		
+	 	var fontsize = 20;
+		
+		this.m_textParagraph.css({"text-align":"center","font-weight":900,
+								  "font-size" : fontsize +"px","font-family":"맑은 고딕","color":"white"});		
+	}
+	Subtitle.prototype = Subtitle;
+	Subtitle.prototype.constructor = new Subtitle();
+	
+	function SlideObject(rootDiv,imageURL)
+	{
+		ImageDiv.call(this,rootDiv,imageURL);
+		
+		//this.m_comments = new Array() 
+		this.m_subtitles = new Array();
+		
+		this.addComment  = function(text) 
+		{ 
+			//this.m_comments.push(new Comment(text)); 
+
+			var newSubtitle = new Subtitle(this.getDiv(), text);
+			this.m_subtitles.push( newSubtitle);
+			newSubtitle.setY(window.screen.height - this.m_subtitles.length * 23);
+			
+			return newSubtitle;
+		};
+		
+		this.m_audio_oldmovie = document.getElementById("audio_oldmovie");
+		
+		this.addClass("Slide");
+		
+		this.getImage = function() {return this.m_image;};
+		
+		// Must Be Implemented
+		this.getImageSrc    = function(){return this.m_image.src;   };
+		this.getImageWidth  = function(){return this.m_image.width; };
+		this.getImageHeight = function(){return this.m_image.height;};
+	}
+	SlideObject.prototype = new ImageDiv();
+	SlideObject.prototype.constructor = SlideObject;
+	
+	function OldMoveSlidesShow( title,creator,created_time)
+	{		
+		SlideShow.call(this, title,creator,created_time);
+		
+		this.m_currentSlideIndex = -1;
+		this.m_NextshowNextID 	 = undefined;		 
+		this.m_isPlaying  		 = false; 
+		
+		this.m_slideContainerDiv = $("#html-root");
+		
+		var maxWidth = window.screen.width;
+		var maxHeight = window.screen.height;
+		
+		this.m_whiteLayer = new HtmlObject(this.m_slideContainerDiv);
+		this.m_whiteLayer.getDiv().addClass("WhiteLayer");
+		this.m_whiteLayer.setSizeToFit = function(htmlDiv)
+		{
+			this.setBounds( htmlDiv.getX(),htmlDiv.getY(),
+							htmlDiv.getWidth(),htmlDiv.getHeight());
+		}
+		
+		this.m_noiseLayer = new ImageDiv(this.m_slideContainerDiv,"./images/noise1.png");
+		this.m_noiseLayer.getDiv().addClass("NoiseLayer");
+		this.m_noiseLayer.getDiv().css({
+			"opacity":"0.1"
+		});
+		this.m_noiseLayer.setBounds(0,0,0,0);
+	
+		
+		this.m_noiseLayer.setSizeToFit = function(htmlDiv)
+		{
+			this.setBounds( htmlDiv.getX(),htmlDiv.getY(),
+							htmlDiv.getWidth(),htmlDiv.getHeight());
+		}
+		
+		this.m_effectProccesorIntervalID;
+		this.startOldMovieEffect = function() 
+		{
+			var outerThis = this ;
+			this.m_effectProccesorIntervalID = setInterval(function() { outerThis._effectProccesor(); },100);
+		}
+			
+		this._effectProccesor = function()
+		{
+			var x = rand(-3,3);
+			var y = rand(-3,3);
+			this.m_slideContainerDiv.css({"left":x,"top":y});
+			
+			var opacity = rand(10,18);
+			this.m_whiteLayer.getDiv().css({"opacity":opacity/100});
+			
+			var noiseimageCnt = 4;
+			var noiseId = Math.floor(rand(1,noiseimageCnt));
+			
+			
+			this.m_noiseLayer.m_image.src = "./images/noise"+noiseId+".png";
+					this.m_noiseLayer.getDiv().css({
+				"opacity":"0.1"
+			});
+		}
+		
+		
+		this.startShow = function() 
+		{	
+			$("#MadeleineLayer").animate({"background-color":"black"},5000);
+		
+			
+			for(var i=0;i<this.m_slides.length;i++)
+			{
+				var oriWidth  = this.m_slides[i].getImageWidth();
+				var oriHeight = this.m_slides[i].getImageHeight();
+				// oriWidth : oriHeight = width : maxHeight
+				var width = oriWidth * maxHeight / oriHeight;	
+			
+				this.m_slides[i].setBounds( maxWidth * 0.5 - width* 0.5 , 0 , width , maxHeight);
+				this.m_slides[i].getDiv().css({"display":"none"}); 
+			}
+			
+			this.startOldMovieEffect();
+			
+			
+			var outerThis = this; 
+			var TitleObject = new HtmlObject($("#html-root"));
+			TitleObject.getDiv().css({"position":"absolute","display":"none"});
+			TitleObject.setBounds(0,0,window.screen.width,window.screen.height);
+			var text = TitleObject.getDiv().prepend("<p>" + this.m_title+"<br>"+ this.m_created_time + "</p>");
+			text.css({"text-align":"center","font-size":"100px","font-family":"나눔손글씨 펜","color":"white"});
+			
+			TitleObject.getDiv().fadeIn(5000);
+			
+			TitleObject.getDiv().fadeOut(5000,function(){
+				outerThis.showNext();
+			});
+		};
+		
+		this.togglePlay = function()
+		{
+			if(this.m_isPlaying)
+			{
+				this.stop();
+			}
+			else
+			{
+				this.resume();
+			}
+		}
+	
+	
+		this.stop = function() 
+		{
+			this.cancelReservedShowNext();
+			this.m_slideContainerDiv.stop(true);
+			
+			this.m_isPlaying = false;
+		};
+		this.resume = function() 
+		{
+			this.cancelReservedShowNext();
+			this.m_slideContainerDiv.stop(true);s
+			
+			this.m_isPlaying = true;
+			
+			this.showNext();	
+		};
+		
+		this.cancelReservedShowNext = function()
+		{
+			if(this.m_NextshowNextID != undefined)
+			{
+				clearTimeout(this.m_NextshowNextID);
+			}
+		}
+		
+		this.showNext = function() 
+		{
+			this.m_isPlaying = true; 
+			if (++this.m_currentSlideIndex < this.m_slides.length) {
+				
+				if(this.m_currentSlideIndex - 1 >= 0 )
+					this.m_slides[this.m_currentSlideIndex-1].getDiv().css({"display":"none"});
+				
+				this.m_slides[this.m_currentSlideIndex].getDiv().css({"display":"block"});
+				this.m_whiteLayer.setSizeToFit(this.m_slides[this.m_currentSlideIndex]);
+				this.m_noiseLayer.setSizeToFit(this.m_slides[this.m_currentSlideIndex]);
+				
+				var outerThis = this;
+				
+				this.cancelReservedShowNext();
+	
+				var outerThis = this; 
+				this.m_NextshowNextID = setTimeout(function(){outerThis.showNext();},5000);
+			}
+			else
+			{
+				this.m_isPlaying = false;
+			}
+		};
+		this.showPrevious = function() 
+		{
+			if(this.m_currentSlideIndex-- > 0)
+			{
+				this.cancelReservedShowNext();
+				this.m_slideContainerDiv.stop(true);
+				
+				var outerThis = this;
+				this.m_slideContainerDiv.animate({
+					top: "-=" + maxHeight
+				}, 3000 ,function()
+				{
+					if(outerThis.m_isPlaying)
+						outerThis.m_NextshowNextID = setTimeout(function(){outerThis.showNext();},slideTimeInterval);
+				});
+			}
+		};
+		this.showAt = function( index , callback ) 
+		{
+			if (index >= 0 && index < this.m_slides.length) {
+				this.m_slideContainerDiv.stop(true);
+				
+				var targetSlide = this.m_slides[index];
+			
+				this.m_slideContainerDiv.animate({
+					top :  (-targetSlide.getY())
+				}, Math.abs(index - this.m_currentSlideIndex) * 500 ,
+					callback);
+			}
+		};
+	}
+	OldMoveSlidesShow.prototype = new SlideShow();
+	OldMoveSlidesShow.prototype.constructor = OldMoveSlidesShow;
+	
+	
+	var slideShow ;
+	var controller;
+	
+	$(document).ready(function(){
+
+		var vSize = new Vector2( window.screen.availWidth, window.screen.availHeight );
+		var vPos  = new Vector2(0,0);
+
+		window.moveTo(vPos.x,vPos.y);
+		window.resizeTo(vSize.x,vSize.y);
+		
+		$("#MadeleineLayer").css({width:"100%",height:"100%"});
+		
+		
+					slideShow = new OldMoveSlidesShow("Madeleine","100002717246207","2011-12-11 02:14:49.0");
+				newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a2.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/303945_138728336227740_100002717246207_135468_700437639_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a8.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/305746_127054037395170_100002717246207_105506_889337744_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a6.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/316401_129238950510012_100002717246207_110857_1045588577_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a7.sphotos.ak.fbcdn.net/hphotos-ak-ash4/316042_110956215671619_100002717246207_56290_101033500_n.jpg"));
+					newSlide.addComment("Yongkuk Woo : 상현아 학교 개학이야?"); newSlide.addComment("Sanghyun  Lee : 내일부터 개학이요 ㅠㅠ"); newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a5.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/318600_124820360951871_100002717246207_98703_710072969_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a3.sphotos.ak.fbcdn.net/hphotos-ak-snc7/307218_152205621546678_100002717246207_167905_1389119690_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a4.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/391548_144362965664277_100002717246207_151230_798371885_n.jpg"));
+					newSlide.addComment("Gahee Kim : 나도 챙겨주고싶은데 시간이 없다 미안 ㅠㅜ"); newSlide.addComment("신창호 : 상현아 얼마안남앗구나 편안하게 마무리 ㄱㄱ"); newSlide.addComment("황신하 : 화이팅!!"); newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a3.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/309140_124768670957040_100002717246207_98618_1300176358_n.jpg"));
+					newSlide.addComment("Curtis Oh : 혜미누나가 잠 안재우고 일시키나 봅니다 ㅜ 어린이는 일찍자야합니다."); newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a1.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/316832_145961218837785_100002717246207_155136_1312308979_n.jpg"));
+					newSlide.addComment("Gahee Kim : 작년 수능 끝나고도 본건데"); newSlide.addComment("심형준 : ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ"); newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a3.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/315081_133708926729681_100002717246207_123039_252323826_n.jpg"));
+					newSlide.addComment("Song Sang Hyun : 더 좋은데 갈거야 상현아ㅎㅎ힘내서 해^ㅇ^v"); newSlide.addComment("신창호 : 토닥토닥"); newSlide.addComment("Yo Han Lee : 인재를 못알아보는 대학이군.."); newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a4.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/391612_152047941562446_100002717246207_167503_2111933503_n.jpg"));
+					newSlide.addComment("Hyeonjun In : 후잡한 수험생이 여기있네"); newSlide.addComment("Sanghyun  Lee : 레알로 파마가 실수가 아닐까"); newSlide.addComment("Hyeonjun In : 사람 자체가 이미 실수로 가득차서 파마는 강화용 아이템 같음"); newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a6.sphotos.ak.fbcdn.net/hphotos-ak-snc6/285036_109485889151985_100002717246207_49112_2533182_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a5.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/375472_155850377848869_100002717246207_175543_429285278_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a1.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/316129_152117724888801_100002717246207_167590_246896680_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a7.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/295976_137303573036883_100002717246207_131603_834805917_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a5.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/310419_129237767176797_100002717246207_110853_1347818811_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a6.sphotos.ak.fbcdn.net/hphotos-ak-snc6/285036_109485889151985_100002717246207_49112_2533182_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a5.sphotos.ak.fbcdn.net/hphotos-ak-snc7/308548_152205601546680_100002717246207_167904_1743175225_n.jpg"));
+					newSlide = slideShow.addSlide(new SlideObject($("#html-root"),"http://a6.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/311090_147715718662335_100002717246207_158995_1450884663_n.jpg"));
+					newSlide.addComment("Hyeonjun In : 내가 주인이라면 어떤 고삼이 와서 수험표 있는데 할인 안 해주시나요!!!!하면 천원이라도 할인해줄 것 같음 그러니까 다 물어봐야지"); newSlide.addComment("Sanghyun  Lee : ㅋ 나도 그럴려고"); newSlide.addComment("서혜미 : 아래 책은 고흐그림인데?"); newSlide.addComment("김대영 : 아래책은 민음사책 같음...."); 
+		
+		controller = new Controller(); 
+		controller.initThumbnails(slideShow.getSlides());
+		
+		slideShow.startShow();
+	});
+	
+	</script>
+</head>
+<body>
+	<div id = "MadeleineLayer" style = "position:absolute; left:0px; top:0px;z-index:-5;width:100%;height:100%; ">
+	</div>
+
+	<div id = "html-root" style= "position:absolute;"></div>
+	
+	<div class = "ControllerZone" id = "ControllerZone" 
+		onmouseover = "controller.onControllerOn(); " 
+		onmouseout  = "controller.onControllerOff();" >
+	</div>
+	<div class = "Controller" id = "Controller">
+		<input id="showPreviousButton" 	 type="button" onclick="slideShow.showPrevious();"/>
+		<input id="togglePlayButton"	 type="button" onclick="slideShow.togglePlay();"/>
+		<input id="showNextButton" 		 type="button" onclick="slideShow.showNext();"/>
+	</div>
+	<div class = "ThumbnailZone" id = "ThumbnailZone">
+		<div class = "ThumbnailContainer" id = "ThumbnailContainer">
+		
+		</div>
+		<div id = "Film">
+			<img src ="../image/film.png" width = 50 height = 100 > 
+		</div>
+		<div style = "left:80%; top:0px; width:100%; height:100%; z-index:21; background-color:black;position:absolute;">
+			
+		</div>
+	</div>
+	<audio id = "audio_oldmovie" autoplay ="autoplay" loop = "loop" > 
+		<source src = "./sounds/oldmovie.mp3" type = "audio/mp3"></source>
+	</audio>
+	<script> 
+	</script>
+</body>
+</html>

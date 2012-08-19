@@ -1,0 +1,268 @@
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+    pageEncoding="EUC-KR"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<link href="../css/custom/Controller.css" rel="stylesheet" type="text/css"/>
+	
+	<script language="javascript" type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/jquery-1.7.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/jquery-ui.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/custom/macro.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/custom/vector.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/custom/dynamicObject.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/custom/ImageObject.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/custom/ImageDiv.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/custom/Controller.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/custom/SlideShow.js"></script>
+	<script language="javsscript" type="text/javascript" src="../js/jquery-animate-css-rotate-scale.js"></script>
+	<script language="javsscript" type="text/javascript" src="../js/jquery-css-transform.js"></script>
+	<style>
+		body
+		{
+			background-color:black;
+			width:100%;
+			height:100%;
+			overflow:hidden;
+		}
+		.PhotoSlide
+		{	
+			position		:absolute;
+			background-color:white;
+			padding-top     :5px;
+	 		padding-left    :5px;
+	 		padding-right   :5px;
+			padding-bottom  :5px;
+		}
+		.Page
+		{
+			background-image:url("./images/page_bg1.jpg");
+			background-repeat:no-repeat;
+			background-size:100% 100%;
+			display : inline-block;
+			width : 1024px;
+			height: 768px; 
+			
+			position : absolute;
+			left:0px;
+			top:0px;
+			
+		}
+		.PhotoSlide img
+		{
+			width :100%;
+			height:auto;
+			position:relative; 
+		}
+		#html-root
+		{
+			background-color : black;
+		}
+	</style>
+	<script language="javascript" type="text/javascript">
+	
+		var screenWidth = 1024;
+		var screenHeight = 768;
+		
+		function PhotoSlide(rootDiv,imageSrc)
+		{
+			ImageDiv.call(this,rootDiv,imageSrc);
+			this.getDiv().addClass("PhotoSlide");
+			
+			////////////////////////////////////////			
+			this.m_comments = new Array();
+			////////////////////////////////////////
+		
+			this.autoScale = function(targetSize)
+			{
+				var oriWidth  = this.getDiv().width();
+				var oriHeight = this.getDiv().height();
+				var aveSize = (oriWidth+oriHeight) * 0.5;
+				
+				var scale = targetSize/aveSize;
+					
+				this.setSize(oriWidth * scale,oriHeight * scale);
+			}
+			
+			this.addComment = function(comment)
+			{
+				this.m_comments.push(comment);
+				return comment;
+			};
+		}
+		PhotoSlide.prototype = ImageDiv.prototype;
+		PhotoSlide.constructor = PhotoSlide;
+		
+		function Page(rootDiv)
+		{
+			HtmlObject.call(this,rootDiv);
+			
+			this.m_slides = new Array();
+			this.m_slideCapacity = 2; // 이 페이지 디자인에 넣을 수 있는 슬라이드 수
+			
+			this.getDiv().addClass("Page");
+			
+			this.addPhoto = function(photoSlide)
+			{
+				photoSlide.autoScale( 400 );
+				this.getDiv().append(photoSlide.getDiv());
+				this.m_slides.push(photoSlide);
+				
+				return !this.isFull();
+			};
+			this.showPage = function()
+			{
+				if(this.m_slides.length == 2)
+				{
+					var firstPhoto = this.m_slides[0];
+					firstPhoto.setPos(30,30);
+					
+					var secondPhoto = this.m_slides[1];
+			
+					secondPhoto.setPos(this.getDiv().width()  - secondPhoto.getWidth()  - 50,
+								   	   this.getDiv().height() - secondPhoto.getHeight() - 50);
+					
+					this.getDiv().children("div").rotate(rand(-45,45) + "deg");
+				}
+			}
+			this.isFull = function()
+			{
+				return this.m_slides.length >= this.m_slideCapacity;
+			};
+		}
+		Page.prototype = HtmlObject.prototype;
+		Page.consturcotr = Page;
+		
+		function AlbumBookSlideShow(title,creator,created_time)
+		{
+			SlideShow.call(this,title,creator,created_time);
+			var outerThis = this;
+			
+			this.m_currentSlideIndex = -1 ;
+			
+			this.m_photoSlideArray;
+			
+			this.currentSlide = function() {return this.m_slides[this.m_currentSlideIndex];};
+			this.previousSlide= function() 
+			{
+				if( (this.m_currentSlideIndex - 1) < 0 ||
+					(this.m_currentSlideIndex - 1) >= this.m_slides.length)
+					return null;	
+				return this.m_slides[this.m_currentSlideIndex-1];
+			};
+			this.nextSlide = function()
+			{
+				if( (this.m_currentSlideIndex + 1) < 0 ||
+				    (this.m_currentSlideIndex + 1) >= this.m_slides.length)
+					return null;	
+				return this.m_slides[this.m_currentSlideIndex + 1];
+			};
+			this.addSlide = function(slide)
+			{ 
+				this.m_slides.push(slide); 
+				return slide;
+			};			
+			this.startShow    = function() 
+			{
+				this.m_photoSlideArray = this.m_slides;
+				
+				this.m_slides = new Array();
+				
+				var pageCnt = 0;
+				var page = new Page($("#html-root"));
+				
+				this.m_slides.push(page);
+				for(var i=0;i<this.m_photoSlideArray.length;i++)
+				{
+					if(! page.addPhoto(this.m_photoSlideArray[i]))
+					{
+						page.showPage();
+						page = new Page($("#html-root"));
+						this.m_slides.push(page);
+					}	
+					page.getDiv().css({"z-index": 100+i});
+					pageCnt++;
+				}
+				$(".Page").css({"left":"1024px"});
+				
+				setTimeout(function(){
+					outerThis.showNext();
+				},2500);
+			};
+			this.stop         = function() {};
+			this.resume 	  = function() {};
+			this.showNext     = function() 
+			{
+				this.m_currentSlideIndex++;
+				
+				var currentSlide = this.currentSlide();
+				currentSlide.getDiv().animate({"left":"-=1024px"},
+				2500,
+				function(){
+					var prevSlide = outerThis.previousSlide();
+					if(prevSlide)
+						prevSlide.getDiv().hide();
+					setTimeout(function(){
+						outerThis.showNext();
+					},2000);
+				});
+	
+			};
+			this.showPrevious = function() {};
+			this.showAt       = function( index ) {};
+		}
+		AlbumBookSlideShow.prototype   = SlideShow.prototype;
+		AlbumBookSlideShow.constructor = AlbumBookSlideShow;
+		
+		var slideShow;
+		var newSlide;
+		$(document).ready(function(){
+			self.moveTo(0,0);
+			self.resizeTo(screenWidth,screenHeight);
+			self.onresize = function()
+			{
+				if(self.outerHeight != screenHeight ||
+				   self.outerWidth  != screenWidth)
+				{
+					self.resizeTo(screenWidth,screenHeight);
+				}
+			};
+			
+			slideShow = new AlbumBookSlideShow("Madeleine","100002717246207","2011-12-11 02:14:49.0");
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a2.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/303945_138728336227740_100002717246207_135468_700437639_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a8.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/305746_127054037395170_100002717246207_105506_889337744_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a6.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/316401_129238950510012_100002717246207_110857_1045588577_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a7.sphotos.ak.fbcdn.net/hphotos-ak-ash4/316042_110956215671619_100002717246207_56290_101033500_n.jpg"));
+			newSlide.addComment("Yongkuk Woo : 상현아 학교 개학이야?"); 
+			newSlide.addComment("Sanghyun  Lee : 내일부터 개학이요 ㅠㅠ"); 
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a5.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/318600_124820360951871_100002717246207_98703_710072969_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a3.sphotos.ak.fbcdn.net/hphotos-ak-snc7/307218_152205621546678_100002717246207_167905_1389119690_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a4.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/391548_144362965664277_100002717246207_151230_798371885_n.jpg"));
+			newSlide.addComment("Gahee Kim : 나도 챙겨주고싶은데 시간이 없다 미안 ㅠㅜ"); newSlide.addComment("신창호 : 상현아 얼마안남앗구나 편안하게 마무리 ㄱㄱ"); newSlide.addComment("황신하 : 화이팅!!"); newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a3.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/309140_124768670957040_100002717246207_98618_1300176358_n.jpg"));
+			newSlide.addComment("Curtis Oh : 혜미누나가 잠 안재우고 일시키나 봅니다 ㅜ 어린이는 일찍자야합니다."); newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a1.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/316832_145961218837785_100002717246207_155136_1312308979_n.jpg"));
+			newSlide.addComment("Gahee Kim : 작년 수능 끝나고도 본건데"); newSlide.addComment("심형준 : ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ"); newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a3.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/315081_133708926729681_100002717246207_123039_252323826_n.jpg"));
+			newSlide.addComment("Song Sang Hyun : 더 좋은데 갈거야 상현아ㅎㅎ힘내서 해^ㅇ^v"); newSlide.addComment("신창호 : 토닥토닥"); newSlide.addComment("Yo Han Lee : 인재를 못알아보는 대학이군.."); newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a4.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/391612_152047941562446_100002717246207_167503_2111933503_n.jpg"));
+			newSlide.addComment("Hyeonjun In : 후잡한 수험생이 여기있네"); newSlide.addComment("Sanghyun  Lee : 레알로 파마가 실수가 아닐까"); newSlide.addComment("Hyeonjun In : 사람 자체가 이미 실수로 가득차서 파마는 강화용 아이템 같음"); newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a6.sphotos.ak.fbcdn.net/hphotos-ak-snc6/285036_109485889151985_100002717246207_49112_2533182_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a5.sphotos.ak.fbcdn.net/hphotos-ak-ash4/s720x720/375472_155850377848869_100002717246207_175543_429285278_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a1.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/316129_152117724888801_100002717246207_167590_246896680_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a7.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/295976_137303573036883_100002717246207_131603_834805917_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a5.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/310419_129237767176797_100002717246207_110853_1347818811_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a6.sphotos.ak.fbcdn.net/hphotos-ak-snc6/285036_109485889151985_100002717246207_49112_2533182_n.jpg"));				newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a5.sphotos.ak.fbcdn.net/hphotos-ak-snc7/308548_152205601546680_100002717246207_167904_1743175225_n.jpg"));
+			newSlide = slideShow.addSlide(new PhotoSlide($("#html-root"),"http://a6.sphotos.ak.fbcdn.net/hphotos-ak-snc7/s720x720/311090_147715718662335_100002717246207_158995_1450884663_n.jpg"));
+			newSlide.addComment("Hyeonjun In : 내가 주인이라면 어떤 고삼이 와서 수험표 있는데 할인 안 해주시나요!!!!하면 천원이라도 할인해줄 것 같음 그러니까 다 물어봐야지"); newSlide.addComment("Sanghyun  Lee : ㅋ 나도 그럴려고"); newSlide.addComment("서혜미 : 아래 책은 고흐그림인데?"); newSlide.addComment("김대영 : 아래책은 민음사책 같음...."); 	
+			
+			slideShow.startShow();
+		});
+	</script>
+<title></title>
+</head>
+	<body>
+		<center>
+			<div id = "html-root">
+			
+			</div>
+		</center>
+	</body>
+</html>

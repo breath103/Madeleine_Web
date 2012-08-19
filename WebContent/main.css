@@ -1,0 +1,426 @@
+		.CustomButton
+		{
+			background: none;
+			border: none;
+			color: #000000;
+			background-size:100% 100%;
+		}
+		.CustomButton:hover 
+		{
+			cursor:pointer;
+		}
+		.CustomTextArea
+		{
+			background: none;
+			border: none;
+			color: #000000;
+		}
+		
+		#LoadingProgressBar
+		{
+			width:400px;
+			height:25px;
+			border: 2px solid #ffffff; 
+        	-moz-border-radius:10px 10px 10px 10px; 
+       		border-radius:10px 10px 10px 10px; 
+       		-webkit-border-radius:10px 10px 10px 10px; 
+		}
+		
+		.popup1
+		{
+			position:absolute;
+			width:100%;
+			height:100%;
+			background-size:100% 100%;
+			background-image:url("./image/main/popup/main_popup1_bgimg.png");
+		}
+		.popup2
+		{
+			position:absolute;
+			width:100%;
+			height:100%;
+			background-size:100% 100%;
+			background-image:url("./image/main/popup/main_popup2_bg.png");
+		}
+		.popupbutton
+		{
+			position:relative;
+			left:183px;
+			top:172px;
+			width:191px;
+			height:55px;
+			background-image:url("./image/main/popup/main_popup1_button1_basic.png");
+		}
+		.popupbutton:hover
+		{
+			cursor:pointer;
+		}
+		.popup2 .popupbutton
+		{
+			top:153px;
+		}
+		.radiobutton_bar
+		{
+			position:relative;
+			left:36px;
+			top:122px;
+			width:443px;
+			height:17px;
+			background-size : 100% 100%;
+			background-image:url("./image/main/popup/main_popup2_bg_radiobutton.png");
+	
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		@font-face {
+			font-family : "NanumGothic"
+			src : url("./font/NanumGothic.eot")
+		}
+		
+		
+		input[type=button] : hover
+		{
+			cursor : pointer;
+		}
+		
+		.DIV
+		{
+			display:inline;
+		}	
+		.main
+		{
+			width:1000px;
+			height:710px;
+			z-index:0;
+			background-image : url("./image/main/madeleine_bg.png");
+			overflow:hidden;
+		}
+		.main .albumViewBackButton
+		{
+			position : absolute;
+			left : 0px;
+			top  : 0px;
+			background-size  : 100% 100%;
+			background-image : url("./image/main/left_arrow.png");
+			width:48px;
+			height:100%;
+			z-index : 10000;
+			display:none;
+			
+		}
+		
+		
+		.topBar 
+		{
+			width:1000px;
+			height:50px;
+			z-index:1;
+			background-image : url("./image/main/topbar_bg.png");
+			position : relative;
+			box-shadow : 0px 1px 25px #333333
+		}
+		.middle
+		{
+			height:623px;
+			width:100%;
+		}
+		
+		
+		.pageIndicatorContainer
+		{
+			z-index : 49;
+			position : absolute;
+			top : 95%;
+			left : 50%;
+			height : 20px;
+			width  : 50%;
+			margin-left : -25%;
+		}
+		.pageIndicator
+		{
+			background-color : white;
+			width:10px;
+			height:10px;
+			display:inline-block;
+			
+			box-shadow	: 0px 0px 10px black;
+			
+			border: 0px solid #fff; 
+        	-moz-border-radius:5px 5px 5px 5px; 
+       		border-radius:5px 5px 5px 5px; 
+       		-webkit-border-radius: 5px 5px 5px 5px; 
+			
+			margin-right : 15px;
+			margin-right : 15px;
+		}
+		.pageIndicator_selected
+		{
+			background-color : gray;
+			width:10px;
+			height:10px;
+			display:inline-block;
+			
+			border: 0px solid #fff; 
+        	-moz-border-radius:5px 5px 5px 5px; 
+       		border-radius:5px 5px 5px 5px; 
+       		-webkit-border-radius: 5px 5px 5px 5px; 
+		}
+		
+		
+		.footer
+		{
+			width:100%;
+			top : 0px;
+			height:38px;
+			z-index : 40;
+			position:relative;
+			
+			box-shadow		 : 0px 5px 30px #333333;
+			background-image : url("./image/main/footerbar_bg_1.png");
+			background-size  : 100% 100%;
+		}
+		.footer .navigationButton
+		{
+			height:100%;
+			display:block;
+		}
+		.footer .navigationButton : hover
+		{
+			cursor:pointer;
+		}
+		.footer .timeline
+		{
+			background-color:blue;
+			display:block;
+		}
+		#prevButton
+		{
+			width : 160px;
+			height: 38px;
+			background-image : url("./image/main/footerbar_button_prev_click_1.png");
+			background-size  : 100% 100%;
+		}
+		#nextButton
+		{
+			width : 160px;
+			height: 38px;
+			background-image : url("./image/main/footerbar_button_next_click_1.png");
+			background-size  : 100% 100%;
+		}
+		
+		.LineCalander 
+		{
+			position : relative;
+		}
+		.LineCalander .Bar
+		{
+			position : absolute;
+			width:3px;
+		}
+		
+		.toggleMainViewButton
+		{
+			margin-top:auto;
+			float:right;
+			height:49px;
+			width:159px;
+			background-color:transparent;
+			background-size : 100% 100%;
+		}
+		.toggleMainViewButton:hover
+		{
+			cursor:pointer;
+		}
+		.viewSelectorContainer
+		{
+			position:absolute;
+			left:10px;
+			top:10px;
+			z-index:10;
+			display:none;
+		}
+		.madeleineMain
+		{
+			position:relative;
+			width:100%;
+			height:100%;
+			
+			background-image : url("./image/bg.png");
+			background-size  : 100% 100%; 
+		}
+		
+		.contentView
+		{
+			position:relative;
+			width:100%;
+			height:100%;
+			overflow:hidden;
+		}
+		#albumView
+		{
+		}
+		#postView
+		{
+		}
+		
+		.isPrivateButton
+		{
+			width:63px;
+			height:24px;
+			text-decoration : none;
+			background: transparent no-repeat top left;
+			background-size : 100% 100%;
+		}
+		
+		.madeleineQueue
+		{
+			position : absolute;
+			z-index  : 10;
+			
+			left : 82%;
+			top :  20px;
+			
+			width : 152px;
+			height : 357px;
+			
+	        -moz-border-radius	:5px 5px 5px 5px; 
+ 	        border-radius		:5px 5px 5px 5px; 
+ 	       -webkit-border-radius:5px 5px 5px 5px; 
+			
+			vertical-align:top;
+			text-align:center;
+			padding : 7px 7px 7px 7px;
+			
+			background-image:url("./image/main/main_sidebar_shadowbg_img.png");
+		}
+
+		.madeleineQueue_sub /*modify*/
+		{
+			top : 400px;
+			z-index  : 10;
+			
+			left : 82%;
+			width:152px;
+			height:170px;
+			
+			position:absolute;
+			
+		    -moz-border-radius	:5px 5px 5px 5px; 
+ 	        border-radius		:5px 5px 5px 5px; 
+ 	       -webkit-border-radius:5px 5px 5px 5px; 
+		
+			padding : 7px 7px 7px 7px;
+			background-image : url("./image/main/main_sidebar2_shadowbg_img.png");
+		}
+		.madeleineQueue_sub .Contents
+		{
+			width:auto;
+			height:auto;
+			background-image : url("./image/main/main_sidebar2_bg_img_1.png");
+			background-size  : 100% 100%;
+			padding : 10px 10px 17px 10px;
+		}
+		#send_datepicker /* modify */
+		{
+			background-image : url("./image/main/main_sidebar2_dateform.png");
+			background-size  : 100% 100%;
+			border 0px 0px 0px 0px;
+			white-space :nowrap;
+			max-width:100%;
+			font-family: Myriad Pro;
+			font-size: 10pt;
+			font-weight:bold;
+			line-height: 100%;
+			word-spacing: normal;
+			text-align: center;
+			text-indent: 0ex;
+			color:#8f8887;
+			
+		}
+		.madeleineQueue .QueueContainer
+		{
+			height:213px;
+			overflow-x:hidden;
+			overflow-y:hidden;
+			background-image:url("./image/main/main_sidebar_section2_bg.png");
+		}
+		#sendControlContainer
+		{
+			width:152px;
+			height:72px;
+			background-image:url("./image/main/main_sidebar_section3_bg.png");
+
+		}
+		#sendButton
+		{
+			width:139px;
+			height:44px;
+			background-color:#00000000;	
+			vertical-align:center;
+			padding : 0px 0px 0px 0px;
+			border : 0px 0px 0px 0px;
+			whitespace : nowrap;
+			background-image : url("./image/main/main_sidebar_section3_button1_basic.png");
+		}
+		.Calander
+		{
+		}
+		#fancybox-outer { 
+ 	       position: relative; 
+ 	       width: 100%; 
+ 	       height: 100%; 
+ 	       border:none;
+		   background:transparent;
+		}
+		#fancybox-content { 
+       		width: 0; 
+        	height: 0; 
+        	padding: 0; 
+        	outline: none; 
+        	position: relative; 
+        	overflow: hidden; 
+        	z-index: 1102; 
+        	background:transparent;
+			border:none;
+		} 
+		#fancybox-frame
+		{
+			border:none;
+			background:transparent;
+			overflow:hidden;
+		}
+		#fancybox-wrap
+		{
+			/*
+			width:976px;
+			height:644px;
+			*/
+		}
+		iframe
+		{
+			overflow:hidden;
+		}
+		
+		
+		#ui-datepicker-div
+		{
+			width :221px;
+			height:216x;
+			left:1000px;
+			top:443px;
+		}
+		
+		
+		
+		
+		

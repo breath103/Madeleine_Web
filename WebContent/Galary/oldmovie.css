@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+	.WhiteLayer
+	{
+		position:absolute;
+		background-color:white;
+		z-index:10;
+	}
+	.NoiseLayer
+	{
+		position:absolute;
+		z-index:9;
+		opacity:0.1;
+	}
+	.Subtitle
+	{
+		position:absolute;
+	}

@@ -1,0 +1,287 @@
+	.Photo
+	{
+		position:absolute;
+		z-index:6;
+				
+		padding:10px 10px 10px 10px;
+		
+		border-bottom-color : black;
+		border-bottom-style : solid;
+		border-bottom-width : 5px;
+	       
+		border: 0px solid #fff; 
+        -moz-border-radius	 :10px 10px 10px 10px; 
+       	border-radius		 :10px 10px 10px 10px; 
+       	-webkit-border-radius:10px 10px 10px 10px; 
+		
+		background-image : url("../../image/main/photo_bg.png");
+		background-size  : 100% 100%;
+		
+		width  : 269px;
+		height : 303px;
+	}
+	.PhotoContainer
+	{
+		width:100%;
+		height:58%;
+		display : block;
+		overflow:hidden;
+		
+		border: 0px solid #fff; 
+		border-radius		 :5px 5px 5px 5px; 
+        -moz-border-radius	 :5px 5px 5px 5px; 
+       	-webkit-border-radius:5px 5px 5px 5px; 
+	}
+	.PhotoContainer img
+	{
+		width:100%;
+		height:auto;
+		position:relative;
+		left : 0px;
+		
+		border: 0px solid #fff; 
+        -moz-border-radius   :0px 0px 10px 10px; 
+       	border-radius		 :0px 0px 10px 10px; 
+       	-webkit-border-radius:0px 0px 10px 10px;
+	}
+	.Photo .TextContainer
+	{
+		width:100%;
+		height:32%;
+		position:relative;
+		
+	}
+	.Photo .Tape
+	{
+		position:absolute;
+		left   : -35px;
+		top    : -20px;
+		width  : 82px;
+		height : 56px;
+		
+		padding:0px 0px 8px 0px;
+		
+		background-image : url("../../image/main/photo_tape.png");	
+		background-size  : 100% 100% ;
+	}
+	.Photo .TextContainer .DateContainer
+	{
+		position:absolute;
+		left  :0%;
+		top	  :0%;
+		width :30%;
+		height:100%;
+		display:inline-block;
+	}
+	.Photo .TextContainer .DateContainer .Date
+	{
+		padding-top : 13px;
+	}
+	.Photo .TextContainer .DateContainer .Month
+	{
+		
+	}
+	.Photo .TextContainer .MessageContainer
+	{
+		font-family : "³ª´®°íµñ";
+		font-size	: 11px;
+		word-spacing:-50;
+		color : #707070; 
+		text-align:left;
+		line-height:160%;
+		position:absolute;
+		left	:30%;
+		top		:0%;
+		width	:70%;
+		height	:100%;
+		display:inline-block;
+		overflow:hidden;
+	}
+	.Photo .BottomBar
+	{
+		height : 10%;
+		width  : 100%;
+		background-color : "transparent";
+	}
+	.Photo .PhotoSelctedOverlay 
+	{
+		position:absolute;
+		left: 0px;
+		top : 0px;
+		width  : 100%;
+		height : 100%; 
+		opacity : 0.0;
+		background-size : 100% 100%;
+		background-image : url("../../image/main/photo_selected_bg.png");
+	}
+	.PhotoEffectDiv
+	{
+		position:absolute;
+		z-index:1001;
+		
+		border: 0px solid #fff; 
+        -moz-border-radius:10px 10px 10px 10px; 
+       	border-radius:10px 10px 10px 10px; 
+       	-webkit-border-radius: 10px 10px 10px 10px; 
+	}
+	.PhotoEffectDiv img
+	{
+		width:100%;
+		height:100%;
+		
+		border: 0px solid #fff; 
+        -moz-border-radius:10px 10px 10px 10px; 
+       	border-radius:10px 10px 10px 10px; 
+       	-webkit-border-radius: 10px 10px 10px 10px; 
+	}
+	
+	.Album	
+	{
+		position:absolute;
+		z-index : 5;
+		
+		padding:15px 15px 0px 15px;	
+		border: 0px solid #fff; 
+        -moz-border-radius	 :10px 10px 10px 10px; 
+       	border-radius		 :10px 10px 10px 10px; 
+       	-webkit-border-radius:10px 10px 10px 10px; 
+		
+		background-size : 100% 100%;
+		background-image : url("../../image/main/album_bg.png");
+		width:296px;
+		height:257px;
+	}
+	.Album p
+	{
+		font-family:"³ª´® °íµñ";
+		font-size:15px;
+		line-height:16px;
+	}
+
+	.Album .PhotoContainer
+	{
+		width  :95%;
+		height :75%; 
+		display : block;
+		overflow:hidden;
+		position:relative;
+		border: 0px solid #fff; 
+		border-radius		 :3px 3px 3px 3px; 
+        -moz-border-radius	 :3px 3px 3px 3px; 
+       	-webkit-border-radius:3px 3px 3px 3px; 
+	}
+	.Album .PhotoContainer .SearchIconOverlay
+	{
+		position:absolute;
+		left   :0px;
+		top    :0px;
+		width  :100%;
+		height :100%;
+		background-size  : 100% 100%;
+		background-image : url("../../image/main/album_overlay.png");
+		display:block;
+		opacity:0;
+	}
+	.Album .PhotoContainer img
+	{
+		width:100%;
+		height:auto;
+		position:relative;
+		left : 0px;
+		
+		border: 0px solid #fff; 
+		border-radius		 :3px 3px 3px 3px; 
+        -moz-border-radius	 :3px 3px 3px 3px; 
+       	-webkit-border-radius:3px 3px 3px 3px; 
+	}
+	.Album .TextContainer
+	{
+		font-family : "³ª´®°íµñ";
+		font-size	: 15px;
+		font-weight : bold;
+		color : #9a9493; 
+		vertical-align:middle;
+		width:100%;
+		padding:50 0 0 0 ;
+		height:50%
+	}
+	.Album .TextContainer .AlbumTitle
+	{
+		width:50%;
+		height:100%;
+		text-align:center;
+		float:left;
+	}
+	.Album .TextContainer .AlbumSize
+	{
+		width:50%;
+		height:100%;
+		text-align:center;
+		float :right;
+	}
+	
+	.PhotoQueueThumbnail
+	{
+		position:relative;
+		top : 115px; 
+		
+		display:block;
+		vertical-align:middle;
+		z-index:11;
+		
+		
+		width:120px;
+		height:120px;
+		overflow:hidden;
+		
+		margin-top : -115px;
+		
+		border-color : white;
+		border-style: solid;
+		border-width : 3px;
+		
+		border: 3px solid #fff; 
+        -moz-border-radius:10px 10px 10px 10px; 
+       	border-radius:10px 10px 10px 10px; 
+       	-webkit-border-radius: 10px 10px 10px 10px; 
+	}
+	.PhotoQueueThumbnail img
+	{
+		width:100%;
+		height:100%;
+		
+		border: 0px solid #fff; 
+        -moz-border-radius:10px 10px 10px 10px; 
+       	border-radius:10px 10px 10px 10px; 
+       	-webkit-border-radius: 10px 10px 10px 10px; 
+	}
+	.Post
+	{
+		position:absolute;
+		z-index:6;
+				
+		background-color:white;
+		padding-top:5px;
+	 	padding-left:5px;
+	 	padding-right:5px;
+		padding-bottom:5px;
+		overflow:hidden;
+		
+		width:200px;
+		min-height:300px;
+	}
+	.PostContainer
+	{
+		width:100%;
+		height:80%;
+		display : block;
+		overflow: hidden;
+		background-color:#aaaaaa;
+	}
+	.PostContainer p
+	{
+		font-family:"³ª´®¼Õ±Û¾¾ Ææ";
+		color:black;
+		font-size:25px;
+	}
+	

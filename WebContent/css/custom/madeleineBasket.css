@@ -1,0 +1,268 @@
+	.OpenedMadeleineIcon
+	{
+		position:absolute;
+		z-index:6;
+				
+		padding-top:5px;
+	 	padding-left:5px;
+	 	padding-right:5px;
+		padding-bottom:5px;
+		
+	       
+		border: 0px solid #fff; 
+        -moz-border-radius	 :10px 10px 10px 10px; 
+       	border-radius		 :10px 10px 10px 10px; 
+       	-webkit-border-radius:10px 10px 10px 10px; 
+		
+		width  : 270px;
+		height : 285px;
+		
+		background-size:100% 100%;
+		background-image : url("../../image/basket/madeleine_icon_bg.png");
+	}
+	.OpenedMadeleineIcon:hover
+	{
+		cursor:pointer;
+	}
+	.OpenedMadeleineIcon .PhotoContainer
+	{
+		position : absolute;
+		top   : 44px;
+		left  : 7px;
+		width :264px;
+		height:60%;
+		display : block;
+		overflow:hidden;
+		
+		border: 0px solid #fff; 
+        -moz-border-radius	 :10px 10px 10px 10px; 
+       	border-radius		 :10px 10px 10px 10px; 
+       	-webkit-border-radius:10px 10px 10px 10px; 
+	}
+	.OpenedMadeleineIcon .PhotoContainer img
+	{
+		width:100%
+		height:auto;
+		position:relative;
+		left : 0px;
+		border: 0px solid #fff; 
+        -moz-border-radius   :0px 0px 10px 10px; 
+       	border-radius		 :0px 0px 10px 10px; 
+       	-webkit-border-radius:0px 0px 10px 10px;
+		
+		/*left : -50px;*/ /* 이 값을 조절하여 이미지의 위치릴 조절*/ 
+	}
+	.OpenedMadeleineIcon .TextContainer
+	{
+		/*
+		width:100%;
+		height:30%;
+		background-color : gray;
+		position:relative;
+		*/
+	}
+	
+	
+	
+	
+	
+	.ClosedMadeleineIcon 
+	{		
+		position:absolute;
+		z-index:6;
+				
+		padding-top:5px;
+	 	padding-left:5px;
+	 	padding-right:5px;
+		padding-bottom:5px;
+		
+	       
+		border: 0px solid #fff; 
+        -moz-border-radius	 :10px 10px 10px 10px; 
+       	border-radius		 :10px 10px 10px 10px; 
+       	-webkit-border-radius:10px 10px 10px 10px; 
+		
+		width  : 270px;
+		height : 285px;
+		
+		background-size:100% 100%;
+		
+		background-image : url("../../image/basket/madeleine_icon_bg2.png");
+		width:280px;
+		height:213px;
+	}
+	.madeleineBasket
+	{
+		position:relative;
+		width:100%;
+		height:100%;
+		overflow:hidden;
+		
+		background-image : url("../../image/bg.png");
+		background-size  : 100% 100%; 
+	}
+	.madeleineBasket .SideBar
+	{
+		position:absolute;
+		
+		top  : 20px;
+		left : 815px;
+		width:151px;
+		height:247px;
+		padding : 7px 7px 7px 7px;
+		background-image : url("../../image/basket/section2_sidebar_bg.png");
+		background-size  : 100% 100%;
+		z-index : 10;
+	}
+	.madeleineBasket .SideBar .TopBar
+	{
+		width:100%;
+		height:160px;
+	
+		background-image : url("../../image/basket/section2_sidebar_bg_1.png");
+		background-size  : 100% 100%;	
+	}
+	.madeleineBasket .SideBar .TopBar .RotationBar
+	{
+		width:100%;
+		height:73px;
+		background-size : 100% 100%;
+	}
+	.madeleineBasket .SideBar .TopBar .ShowClosedMadeleine
+	{
+		width:99%;
+		height:41px;
+		position:relative;
+		top:6px;
+		background-size : 100% 100%;
+		background-image : url("../../image/basket/sidebar_menu1_basic.png");
+	}
+	.madeleineBasket .SideBar .TopBar .TastedMadeleine:hover
+	{
+		cursor : pointer;
+	}
+	.madeleineBasket .SideBar .TopBar .ShowOpenedMadeleine
+	{
+		width:99%;
+		height:40px;		
+		position:relative;
+		top:6px;
+		background-size : 100% 100%;
+		background-image : url("../../image/basket/sidebar_menu2_basic.png");
+	}
+	.madeleineBasket .SideBar .TopBar .ShowOpenedMadeleine : hover
+	{
+		cursor : pointer;
+	}
+	
+	.madeleineBasket .SideBar .BottomBar
+	{
+		width:100%;
+		height:86px;
+	
+		background-image : url("../../image/basket/number.png");
+		background-size  : 100% 100%;	
+	}
+	.madeleineBasket .SideBar .BottomBar .CountIndicator
+	{
+		position:relative;
+		top:14px;
+		float:left;
+		width:33%;
+		height:100%;
+		display:none;
+	}
+	.madeleineBasket .SideBar .BottomBar .CountIndicator .Count
+	{
+		vertical-align:middle;
+		width:100%;
+		height:50%;
+		
+		font-family:"나눔 고딕";
+		font-size:20px;
+		font-weight:900;
+	}
+	.madeleineBasket .SideBar .BottomBar .CountIndicator .Label
+	{
+		width:100%;
+		height:50%;
+		font-family:"나눔 고딕";
+		font-size : 13px;
+		font-color:brown;
+	}
+	.madeleineBasket .TimeLine
+	{
+		position : absolute;
+		width  : 685px;
+		height : 86px;	
+		z-index : 50;
+		left : 19%;
+		top  : 623px;
+		
+		border:none;
+		background-size  : 100% 100%;
+		background-image : url("../../image/basket/graph_noshadow.png");
+	}
+	.DateBar
+	{
+		background-color : orange;
+	}
+	.madeleineBasket .TimeLine .DragButton
+	{
+		position:absolute;
+		width:88px;
+		height:32px;
+		
+		background-image : url("../../image/basket/footerbar_button_basic.png");
+		background-size  : 100% 100%;
+			
+		top  : -32px;
+		left : 40%;		
+	}
+	.madeleineBasket .TimeLine .DragButton : hover
+	{
+		cursor : pointer;
+	}
+	
+	/*
+	.MadeleineIcon .Tape
+	{
+		position:absolute;
+		background-color : yellow; 
+		left   : -20px;
+		top    : -10px;
+		width  : 40px;
+		height : 20px;
+	}
+	.MadeleineIcon .TextContainer .DateContainer
+	{
+		position:absolute;
+		left  :0%;
+		top	  :0%;
+		width :30%;
+		height:100%;
+		background-color : red;
+		display:inline-block;
+	}
+	.MadeleineIcon .TextContainer .DateContainer .Date
+	{
+		font-size : 20px;
+		
+	}
+	.MadeleineIcon .TextContainer .DateContainer .Month
+	{
+		font-size : 13px;
+		
+	}
+	.MadeleineIcon .TextContainer .MessageContainer
+	{
+		position:absolute;
+		left	:30%;
+		top:0%;
+		width:70%;
+		height:100%;
+		background-color : green;
+		display:inline-block;
+		overflow:scroll;
+	}
+	*/

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+	<style>
+		.DIV
+		{
+			display:inline;
+		}
+		.main
+		{
+			width:800px;
+			height:800px;
+			z-index:0;
+			background-color:red;
+		}
+		.topBar 
+		{
+			width:800px;
+			height:50px;
+			z-index:1;
+			background-color:blue;
+		}
+		.toggleMainViewButton
+		{
+			margin-top:auto;
+			float:right;
+			height:30px;
+			width:100px;
+			background-color:white;
+		}
+		.viewSelectorContainer
+		{
+			position:absolute;
+			left:10px;
+			top:60px;
+			z-index:10;
+		}
+		.contentView
+		{
+			position:relative;
+			width:100%;
+			height:800px;
+		}
+		#albumView
+		{
+			background-color:#EE00AA;
+		}
+		#postView
+		{
+			background-color:#4422AA;
+		}
+		.Album
+		{
+			position:absolute;
+			z-index : 5;
+			width : 180px;
+			height : 230px;
+		}
+		.Photo
+		{
+			position:absolute;
+			z-index:6;
+		}
+		.madeleineQueue
+		{
+			position : absolute;
+			float    : right ;
+			z-index  : 10;
+			opacity  : 0.7;
+			background-color:yellow;
+			left : 690px;
+			top : 100px;
+			width : 100px;
+			height : 390px;
+			
+			vertical-align:bottom;
+		}
+		.QueueContainer
+		{
+			height:300px;
+			overflow-x:hidden;
+			overflow-y:scroll;
+
+		}
+		.QueueThumbnail
+		{
+			position:absolute;
+			z-index  : 11;
+		}
+		.Calander
+		{
+			
+		}
+
+		.madeleineBasket
+		{
+			background-color:#00ff00;
+			width:800px;
+			height:800px;
+			z-index:11;
+		}
+	</style>
+	<title>Madeleine</title>
+	
+	<script language="javascript" type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
+	<script language="javascript" type="text/javascript" src="./jquery-1.7.js"></script>
+	<script language="javsscript" type="text/javascript" src="./jquery-animate-css-rotate-scale.js"></script>
+	<script language="javsscript" type="text/javascript" src="./jquery-css-transform.js"></script>
+ 	<script language="javascript" type="text/javascript" src="./jquery-ui.js"></script>
+	<script language="javascript" type="text/javascript" src="./macro.js"></script>
+	<script language="javascript" type="text/javascript" src="./vector.js"></script>
+	<script language="javascript" type="text/javascript" src="./dynamicObject.js"></script>
+	<script language="javascript" type="text/javascript" src="./ImageObject.js"></script>
+	<script language="javascript" type="text/javascript" src="./ImageDiv.js"></script>
+	<script language="javascript" type="text/javascript" src="./Controller.js"></script>
+	<script language="javascript" type="text/javascript" src="./SlideShow.js"></script>
+	<script language="javascript" type="text/javascript">
+		
+		function clone (obj, deep) { 
+		  var objectClone = new obj.constructor(); 
+		  for (var property in obj) 
+		    if (!deep) 
+		   		objectClone[property] = obj[property]; 
+		    else if (typeof obj[property] == 'object') 
+		    	objectClone[property] = obj[property].clone(deep); 
+		    else 
+		    	objectClone[property] = obj[property]; 
+		  	return objectClone; 
+		}
+		function rand( min , max)
+		{
+			return min + (max - min) * Math.random();
+		}
+		
+		var facebook_userid;
+		
+		var currentContentView = "album";
+		function toggleView()
+		{
+			if(currentContentView == "post")
+			{
+				currentContentView = "album";
+				$("#postView") .fadeOut();
+				$("#albumView").fadeIn();
+				$("#toggleContentViewButton").val(currentContentView);
+			}
+			else
+			{
+				currentContentView = "post";
+				$("#postView") .fadeIn();
+				$("#albumView").fadeOut();
+				$("#toggleContentViewButton").val(currentContentView);
+			}
+		}
+		var currentMainView = "bakery";
+		function toggleBakeryAndBasket()
+		{
+			if(currentMainView == "bakery")
+			{
+				$(".madeleineBakery").slideToggle();
+				$(".madeleineBasket").slideToggle();
+				currentMainView = "basket"
+			}
+			else{
+				$(".madeleineBakery").slideToggle();
+				$(".madeleineBasket").slideToggle();
+				currentMainView = "bakery"
+			}
+		}
+		
+		
+				//페북 API를 호출했을때 가지고 오는 photo 객채를 그냥 넘긴다. 
+		function Photo(rootDiv,fb_photo)
+		{
+			//Constructor
+			ImageDiv.call(this,rootDiv,fb_photo.source);
+			
+			this.m_fbPhoto = fb_photo;
+	
+			var OuterThis =this;
+			/*
+			FB.api("/" + fb_photo.id + "/comments", function (response) {
+				for(var i =0;i<response.data.length;i++)
+					outerThis.getDiv().prepend(addQuotes(response.data[i].message) + "<br>");
+			});
+			*/
+			this.isSelected = false;
+			
+			this.select   = function() {this.isSelected=true;};
+			this.deselect = function() {this.isSelected=false;};
+		
+			this.getFBPhoto = function() {return this.m_fbPhoto;};
+			
+			
+			this.getDiv().addClass("Photo");
+			/*
+			this.getDiv().mouseenter( function()
+			{
+				OuterThis.getDiv().stop(true);
+				OuterThis.getImageDiv().stop(true);
+				OuterThis.animateSize(130,130,"fast");
+			});
+			this.getDiv().mouseleave( function()
+			{
+				OuterThis.getDiv().stop(true);
+				OuterThis.getImageDiv().stop(true);
+				OuterThis.animateSize(100,100,"fast");  
+			});
+			*/
+			this.getDiv().click( function(){
+				madeleineQueueController.addPhoto(OuterThis);
+			});
+		}
+		Photo.prototype = new ImageDiv();
+		Photo.prototype.constructor = Photo;
+		
+		var g_albums = new Array();
+		var g_selectedAlbum = null; 
+		function Album(rootDiv,fb_album)
+		{
+			ImageDiv.call(this,rootDiv,null);
+		
+			
+			var OuterThis = this;
+			FB.api("/" + fb_album.cover_photo, function (response) 
+			{
+				OuterThis.setImage(response.source);
+				OuterThis.setSize(180,230);
+				OuterThis.getDiv().rotate(rand(-45,45) + "deg");
+				g_albums.push(OuterThis);
+			});
+		
+			this.m_fbAlbum = fb_album;
+			this.m_photos = new Array();
+			
+			FB.api("/" + fb_album.id + "/photos",function (response)
+			{
+				for(var i=0;i<response.data.length;i++)
+				{
+					OuterThis.m_photos[i] = new Photo(rootDiv,response.data[i]);
+					OuterThis.m_photos[i].setBounds(OuterThis.getCenterX() - 50,OuterThis.getCenterY()-50,100,100);
+					OuterThis.getDiv().rotate(rand(-40,40)+'deg');
+					OuterThis.m_photos[i].getDiv().hide();
+				}
+			});
+			this.getDiv().prepend("<h1>" + fb_album.name + "</h1>");
+			this.getDiv().addClass("Album");
+			
+			this.hidePhotos = function()
+			{
+				for(var i = 0; i<this.m_photos.length;i++)
+				{
+					this.m_photos[i].animatePos(OuterThis.getCenterX() - 50,OuterThis.getCenterY()-50);
+					this.m_photos[i].getDiv().fadeOut();
+				}	
+			}
+			this.showPhotos = function()
+			{
+				for (var i = 0; i < this.m_photos.length; i++) 
+				{
+					this.m_photos[i].getDiv().fadeIn();
+					var x = 60 + i%5 * 120;
+					var y = 60 + Math.floor(i/5) * 150;
+					this.m_photos[i].animatePos(x,y);
+				}
+			}
+			
+			this.getDiv().click (function()
+			{
+				albumViewController.selectAlbum(OuterThis);
+			});
+			
+			
+			this.setX(0); 
+			this.setY(0);
+
+			////////////////////////////////////// 	
+		
+			this.getPhotos = function getPhotos() {return m_photos;}
+		}
+		Album.prototype = new ImageDiv(); 
+		Album.prototype.constructor = Album;
+		
+		function AlbumViewController()
+		{
+			this.m_albums = new Array();
+			this.m_isLoaded = false; 
+			
+			this.loadAlbums = function()
+			{
+				if(this.m_isLoaded == false)
+				{
+					FB.api("me/albums",function ( response )
+				    {
+						var albumCnt = 0;
+		
+						for(var i = 0;i<response.data.length;i++)
+				      	{
+							if (response.data[i].cover_photo != undefined) {
+								var newAlbumObject = new Album($("#albumView"),response.data[i]);
+								
+								var x = 50  + Math.floor(albumCnt / 2)  * 200 + rand(-40,40);
+								var y = 50  + (albumCnt % 2 ) * 260 + rand(-40,40);
+								newAlbumObject.setX(x);
+								newAlbumObject.setY(y);
+								
+								albumCnt++;
+							}
+							else
+							{
+							//	alert("asdf");
+							}
+				    	}
+				    });
+					this.m_isLoaded = true;
+				}
+			}
+			this.selectAlbum = function(newAlbum)
+			{
+				if(g_selectedAlbum == null) //선택 안됬던 상태인 경우
+				{
+					$(".Album").fadeTo('slow',0.5); //모두 반투명으로 만들고,
+					newAlbum.getDiv().stop(true);
+					newAlbum.getDiv().fadeTo('slow',1.0);
+					newAlbum.showPhotos();
+					g_selectedAlbum = newAlbum;
+				}
+				else //이미 선택된게 있었던경우
+				{
+					if(g_selectedAlbum == newAlbum || newAlbum == null) //선택되어 있던 레이어를 또 선택한경우 
+					{
+						g_selectedAlbum.hidePhotos();
+						$(".Album").fadeTo('slow',1.0); 
+						g_selectedAlbum = null; //선택 해제 
+					}
+					else // 새로운 레이어를 선택한 경우 
+					{
+						g_selectedAlbum.hidePhotos(); //원래 레이어의 사진울 숨기고
+						newAlbum.showPhotos(); //새로운 레이어의 사진을 보여주고 
+						$(".Album").fadeTo('slow',0.5); //모두 반투명으로 만들고,
+						newAlbum.getDiv().stop(true);
+						newAlbum.getDiv().fadeTo('slow',1.0); 
+						g_selectedAlbum = newAlbum;
+					}
+				}
+			};
+		};
+		albumViewController = new AlbumViewController();
+		
+		
+		
+		////////// const
+			var queueThumbnailSize = 80;
+		
+		function MadeleineQueueController()
+		{
+			this.m_photoQueue = new Array();
+			
+			this.addPhoto    = function ( photo )
+			{
+				this.m_photoQueue.push(photo);
+				var count = this.m_photoQueue.length;
+			
+				var newImageDiv = new ImageDiv($(".QueueContainer"),photo.getFBPhoto().source);	
+				// 메인 레이어가 아니라 큐에 추가했기 때문에 좌표를 다시 계산해줘야한다. 
+				newImageDiv.setBounds(photo.getX() - $(".madeleineQueue").position().left,
+									  photo.getY() - $(".madeleineQueue").position().top,queueThumbnailSize,queueThumbnailSize);	
+				
+				newImageDiv.animatePos( ($(".madeleineQueue").width() - queueThumbnailSize) * 0.5,
+										20 + 12*count);
+				newImageDiv.getDiv().addClass("QueueThumbnail");
+				newImageDiv.getDiv().mouseover(function(){
+					
+				});
+				newImageDiv.getDiv().mouse
+			};
+			this.deletePhoto = function ( photo ){};
+		}
+		var madeleineQueueController = new MadeleineQueueController();
+		
+		
+		$(document).ready(function(){
+			FB.init({ appId: '191785150891389', status: false, cookie: true, xfbml: true ,oauth:true});
+			FB.getLoginStatus(function(response) {
+					if (response.status == 'connected') 
+			    	{
+			    		FB.Canvas.getPageInfo(
+						    function(info) {
+								$(".main").height(info.clientHeight);
+						    }
+						);			    		
+						$.post("./SetFacebookInfoServlet",{facebook_id : response.authResponse.userID ,
+														   access_token : response.authResponse.accessToken },
+			    		  		 							function(data) {});
+															
+						facebook_userid = response.authResponse.userID;
+						albumViewController.loadAlbums();
+			    	}
+			    	else
+			    	{
+			    		alert("Not Conneted");
+			    		var appID = "191785150891389";
+		    		    if (window.location.hash.length == 0) 
+		    		    {
+		    		    	var path = 'https://www.facebook.com/dialog/oauth?';
+		    		 		var queryParams = ['client_id=' + appID,
+		    		    					   'redirect_uri=' + window.location,
+		    		    					   'response_type=token',
+		    		    					   'scope=user_about_me,user_photos,publish_stream,read_friendlists,offline_access'];
+		    		   		var query = queryParams.join('&');
+		    		   		var url = path + query;
+		    		   		location.href = url;
+		    		    } 
+		    		    else 
+		    		    {
+		    		     	var accessToken = window.location.hash.substring(1);
+		    		    }
+			    	}
+				});
+		});
+	</script>
+
+</head>
+<body >
+	<div id="html-root"></div>
+	<div id = "fb-root"></div>
+	<div class = "main">
+		<div class = "topBar"> 
+			<input type=button class="toggleMainViewButton" onclick="toggleBakeryAndBasket();">
+		</div>
+		<div class = "middle">
+			<div class = "madeleineBasket" style="display:none">
+			</div>
+			<div class = "madeleineBakery">
+				<div class ="viewSelectorContainer">
+					<input id="toggleContentViewButton" type="button" onclick="toggleView();"> 
+				</div>
+				<div clsas="contentView" id="postView" style="display:none"> 			
+					Post
+				</div>			
+				<div class="contentView" id="albumView">  <!--onclick="albumViewController.selectAlbum(null);" -->
+					Album
+				</div>
+				<div class="madeleineQueue"> 
+					<div class="QueueContainer">
+					</div>
+					<div style = "display:block;text-align:center;">
+							<input type=button value="send"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script> 
+	</script>
+</body>
+</html>

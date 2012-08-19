@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;" charset="utf-8">
+	
+
+	<title>Madeleine</title>
+	
+	<script language="javascript" type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
+	<script language="javascript" type="text/javascript" src="./jquery-1.7.js"></script>
+	<script language="javascript" type="text/javascript" src="./macro.js"></script>
+	<script language="javascript" type="text/javascript" src="./vector.js"></script>
+	<script language="javascript" type="text/javascript" src="./dynamicObject.js"></script>
+	<script language="javascript" type="text/javascript" src="./ImageObject.js"></script>
+	<script language="javascript" type="text/javascript" >
+		
+		function clone (obj, deep) { 
+		  var objectClone = new obj.constructor(); 
+		  for (var property in obj) 
+		    if (!deep) 
+		   		objectClone[property] = obj[property]; 
+		    else if (typeof obj[property] == 'object') 
+		    	objectClone[property] = obj[property].clone(deep); 
+		    else 
+		    	objectClone[property] = obj[property]; 
+		  	return objectClone; 
+		}
+		
+		var facebook_userid = null;
+		
+		var SelectedImages 	  = new Array();
+		
+		var SendButton  = new DynamicObject();
+		
+		function sendSelectedImages()
+		{
+		//	alert($("#madeleineTitle").val));
+			$.post("./CreateMadeleineServlet",{name:$("#madeleineTitle").val(),creator:facebook_userid},
+				function(result){
+					//alert(result);
+ 					for(var i = 0;i<SelectedImages.length;i++)
+					{
+						$.post( "./InsertMadeleinePhotoServlet",{parent_id : result,src : SelectedImages[i].m_source,facebook_id : SelectedImages[i].m_facebook_id});
+						SelectedImages[i].clearAniQueue();
+						SelectedImages[i].animate({x:0,y:500,alpha:0});
+					
+					}
+					$.post("./MailSenderServlet",{id : result,creator : "怨��"});
+					setTimeout(function() {SelectedImages = new Array(); },2000);
+					
+   				});
+			//alert($("#madeleineTitle").val());
+		}
+		
+		
+		function Photo(fb_photo)
+		{
+			//Constructor
+			ImageObject.call(this);
+			
+			this.setImage(fb_photo.picture);
+			
+			this.m_fbPhoto = fb_photo; 
+			/////////////////////////// 
+			
+						
+			this.onmouseup = function(event)
+			{
+				//SelectedImage = this; 
+				
+				var newImg 	     = new ImageObject();
+				newImg.image     = this.image;
+				
+				newImg.m_vPos.x  = this.m_vPos.x;
+				newImg.m_vPos.y  = this.m_vPos.y;
+				newImg.m_vSize.x = this.m_vSize.x;
+				newImg.m_vSize.y = this.m_vSize.y;
+				
+				//議댁���� ��� �댄�由щ럭�몄�留���� 留���댁� ��� 
+				newImg.m_source = this.m_fbPhoto.source;
+				newImg.m_facebook_id = this.m_fbPhoto.id;
+				
+				newImg.m_isImageLoaded = true;
+				
+				newImg.animate( {x:SelectedImages.length *30 + 30,y:600} );
+				
+				
+				SelectedImages.push(newImg);
+				
+				this.clearAniQueue();
+				this.animate({alpha: 0.5});
+			}
+		}
+		Photo.prototype = new ImageObject(); 
+		Photo.prototype.constructor = Photo;
+		
+		var SelectedAlbum = null;
+		function Album(fb_album)
+		{
+			//Constructor
+			ImageObject.call(this);
+			
+			this.m_fbAlbum = fb_album;
+			this.m_photos = new Array();
+			
+			var OuterThis = this;
+			FB.api("/" + fb_album.cover_photo, function (response) 
+			{
+				OuterThis.setImage(response.source);
+			});
+			
+			FB.api("/" + fb_album.id + "/photos",function (response)
+			{
+				for(var i=0;i<response.data.length;i++)
+				{
+					OuterThis.m_photos[i] = new Photo(response.data[i]);
+					OuterThis.m_photos[i].setBounds(OuterThis.getX(),OuterThis.getY(),0,0);
+					OuterThis.m_photos[i].setAlpha(0.0);
+				}
+			});
+			
+			
+			this.spreadPhotos = function(){
+				var heightCnt = 0;
+				for(var i=0;i<this.m_photos.length;i++)
+				{
+					if(i%5 == 0 )
+						heightCnt++;
+					this.m_photos[i].clearAniQueue();
+					this.m_photos[i].animate( { x : 100 + (i%5)*120	,
+											    y : 200 + heightCnt * 120,
+											    width  : 100,
+											    height : 100,
+											    alpha  : 1.0, 
+											    speed  : 0.1 } );
+										
+							
+				}	
+			}
+			this.clearPhotos = function () {
+				for(var i=0;i<this.m_photos.length;i++)
+				{
+					this.m_photos[i].clearAniQueue();
+					this.m_photos[i].animate( { x : this.getX(),
+												y : this.getY(),
+												width  : 0,
+												height : 0,
+												alpha  : 0,
+												speed  : 0.1} );
+				}
+			}
+			
+			// 留����肄�갚 �ㅼ� 
+			this.onmouseup	  = function(event)
+			{
+				if(SelectedAlbum != this)
+				{
+					if(SelectedAlbum != null)
+						SelectedAlbum.clearPhotos(); 
+					this.spreadPhotos();
+					SelectedAlbum = this;
+				}
+				else
+				{
+					SelectedAlbum = null;
+					this.clearPhotos();
+				}
+			}
+			this.onmouseenter = function(event)
+			{
+				var bigSize = 300;
+				this.clearAniQueue();
+				this.animate({  width : bigSize  ,
+							   height : bigSize  , rotation : toRadian(45), speed : 0.2});
+			}
+			this.onmouseout = function(event)
+			{
+				var smallSize = 150; 
+				this.clearAniQueue();
+				this.animate({  width : smallSize ,
+							   height : smallSize , rotation : toRadian(0),speed : 0.15});
+							   
+			}
+			
+			///////////////////////////////////////			
+		}
+		Album.prototype = new ImageObject(); 
+		Album.prototype.constructor = Album;
+
+		$(document).ready(function(){
+			
+			SendButton.setY(700);
+			SendButton.setWidth(100);
+			SendButton.setHeight(100);
+			SendButton.onmouseup = function(event) 
+			{
+				$("#inputBox").css({left:100,top:700});
+				$("#inputBox").fadeIn();
+			//	sendSelectedImages();
+			}
+			
+			FB.init({ appId: '191785150891389', status: false, cookie: true, xfbml: true ,oauth:true});
+			FB.getLoginStatus(function(response) {
+					if (response.status == 'connected') 
+			    	{
+			    		FB.Canvas.getPageInfo(
+						    function(info) {
+								/*
+						     	var context = document.getElementsByTagName('canvas')[0].getContext('2d');
+								context.canvas.width  = info.clientWidth;
+								context.canvas.height = info.clientHeight;
+								*/
+								alert( info.clientWidth );
+								SetCavnasSize(info.clientWidth,info.clientHeight);
+						    }
+						);			    		
+						$.post("./SetFacebookInfoServlet",{facebook_id : response.authResponse.userID ,
+														   access_token : response.authResponse.accessToken },
+			    		  		 							function(data) {});
+															
+						facebook_userid = response.authResponse.userID;
+						
+			    		FB.api("me/albums",function ( response )
+			    		{
+							var albumCnt = 0;
+			    		  	for(var i = 0;i<response.data.length;i++)
+			    		  	{
+								if (response.data[i].cover_photo != undefined) {
+									var newAlbumObject = new Album(response.data[i]);
+									newAlbumObject.setBounds( (albumCnt) * 200 + 100, 200, 150, 150);
+									albumCnt++ ;
+								}
+								else
+								{
+								//	alert("asdf");
+								}
+			    		  	}
+			    		});
+			    	}
+			    	else
+			    	{
+			    		alert("Not Conneted");
+			    		var appID = "191785150891389";
+		    		    if (window.location.hash.length == 0) 
+		    		    {
+		    		    	var path = 'https://www.facebook.com/dialog/oauth?';
+		    		 		var queryParams = ['client_id=' + appID,
+		    		    					   'redirect_uri=' + window.location,
+		    		    					   'response_type=token',
+		    		    					   'scope=user_about_me,user_photos,publish_stream,read_friendlists,offline_access'];
+		    		   		var query = queryParams.join('&');
+		    		   		var url = path + query;
+		    		   		location.href = url;
+		    		    } 
+		    		    else 
+		    		    {
+		    		     	var accessToken = window.location.hash.substring(1);
+		    		    }
+			    	}
+			});
+		});
+	</script>
+
+</head>
+<body >
+	<div id="html-root"></div>
+	<div id = "fb-root"></div>
+	<div id = "MadeleineLayer" role = "main" style = "position:absolute; left:0px; top:0px"
+			onmousemove = "ObjectManager.mouseEventProcess(event);"
+			onmousedown = "ObjectManager.onmousedown(event);"
+			onmouseup   = "ObjectManager.onmouseup(event);">  
+			<canvas id 	  = "MadeleineCanvas" onclick = "AddNewObject( event );" 
+					width ="1200" height="800">�ъ���� 怨�� ��釉���곗�媛�HTML5瑜�吏����� ������.</canvas>
+	<div id = "inputBox" style = "position:absolute; left:0px; top:0px; width:300px; height:300px; display:none;" >
+		<br>
+		<input id="madeleineTitle" type="text" name="titleInput">
+		<input type="button" name="sendMadeleine" value="send" onmouseup="sendSelectedImages()"> 
+		<br>
+	</div>
+	
+	<script> 
+		SetCanvasSize(1200,800);
+	
+	
+		context = document.getElementsByTagName('canvas')[0].getContext('2d');
+		function draw()
+		{
+			// ���留�猷⑦�. 媛���ⓦ� 
+		
+			//clear
+			context.fillStyle = "rgb(255,255,255)";
+			context.fillRect(0,0,$("#MadeleineCanvas").width(),$("#MadeleineCanvas").height());
+		
+			// �ㅻ���� ���留�
+			ObjectManager.onMove();
+			ObjectManager.onRender(context);
+			
+			/*// ��낫��� 
+			context.fillStyle = "rgb(255,0,0)";
+			context.font  = "32px Arial";
+			context.fillText(mouseX +".." + mouseY , 0, 50); // ��� 梨��吏������異��
+			if (ObjectManager.canvasInfo != null) {
+				context.fillText(ObjectManager.canvasInfo.offsetLeft + ".." + ObjectManager.canvasInfo.offsetTop, 350, 50); // ��� 梨��吏������異��
+			}
+			if(InLoadingImageCnt > 0){
+				context.fillStyle = "rgb(255,0,0)";
+				context.font  = "32px Arial";
+				context.fillText(InLoadingImageCnt +" image loading...." , 200, 200); // ��� 梨��吏������異��
+			}
+			*/
+		}
+		
+		function AddNewObject( event )
+		{
+			
+		}
+		
+		setInterval(draw,10);
+	</script>
+</body>
+</html>

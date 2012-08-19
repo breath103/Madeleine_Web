@@ -1,0 +1,26 @@
+<div class="popup_container" style="position:relative;width:558px;height:252px;">
+	<div class="popup2">
+		<div class="radiobutton_bar"></div>
+		<div class="popupbutton" style="background-image:url(./image/main/popup/main_popup2_button2_basic.png);">
+			
+		</div>
+	</div>
+	<div class="popup1">
+		<div class="popupbutton">
+			
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function(){
+		$(".popup1 .popupbutton").click(function(){
+			$(".popup1").fadeOut();
+			
+		});
+		
+		$(".popup2 .popupbutton").click(function(){
+			$.fancybox.close();
+		});
+	});
+</script>

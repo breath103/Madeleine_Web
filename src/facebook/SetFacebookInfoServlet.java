@@ -1,0 +1,61 @@
+package facebook;
+
+import java.io.*;
+import java.net.*;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ * Servlet implementation class SetFacebookInfoServlet
+ */
+@WebServlet("/SetFacebookInfo.do")
+public class SetFacebookInfoServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public SetFacebookInfoServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		FacebookBiz biz = new FacebookBiz();
+		
+		String facebook_id  = request.getParameter("facebook_id");
+		String access_token = request.getParameter("access_token");
+		String email	    = request.getParameter("email");
+		if(facebook_id != null && access_token != null)
+		{
+			FacebookEntity fb_Entity = biz.find(facebook_id);
+			if(fb_Entity == null)
+			{
+				biz.insert(fb_Entity = new FacebookEntity(facebook_id,access_token,email));
+				response.getWriter().write("{\"type\":\"new user\"}");
+			}
+			else if(fb_Entity.getAccess_token() != access_token)
+			{
+				biz.update(fb_Entity = new FacebookEntity(facebook_id,access_token,email));
+				response.getWriter().write("{\"type\":\"already know user\"}");
+			}
+			request.getSession().setAttribute("facebook_info",fb_Entity );
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request,response);
+	}
+}
