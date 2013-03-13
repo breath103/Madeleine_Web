@@ -26,6 +26,15 @@ app.configure(function(){
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
+app.all('*', function(req, res, next) {
+	res.charset = "UTF-8";
+	next();
+});
+app.all('*.json', function(req, res, next) {
+	res.setHeader('Content-Type', 'application/json');
+    next();
+});
+
 
 
 http.createServer(app).listen(app.get('port'), function(){
