@@ -3,18 +3,16 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , http = require('http')
-  , path = require('path');
+var express = require('express');
+var http 	= require('http');
+var path 	= require('path');
 
 var app = express();
 
 app.configure(function(){
 	app.set('port', process.env.PORT || 3000);
 	app.set('views', __dirname + '/views');
-	app.set('view engine', 'jade');
+	app.set('view engine', 'ejs');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(express.bodyParser());
@@ -33,6 +31,9 @@ app.all('*', function(req, res, next) {
 app.all('*.json', function(req, res, next) {
 	res.setHeader('Content-Type', 'application/json');
     next();
+});
+app.get("/",function(req,res){
+	res.render("index");
 });
 
 
